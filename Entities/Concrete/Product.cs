@@ -18,3 +18,4 @@ namespace Entities.Concrete
 //1- Naming conventions
 //2- LINQ - Language Integretad Query
 //3- IOC container
+//4- IDisposable pattern
