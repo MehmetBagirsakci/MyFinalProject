@@ -1,4 +1,4 @@
-﻿using Entities.Abstract;
+﻿using Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,3 +19,4 @@ namespace Entities.Concrete
 //2- LINQ - Language Integretad Query
 //3- IOC container
 //4- IDisposable pattern
+//5- DTO (Data Transformation Object)
