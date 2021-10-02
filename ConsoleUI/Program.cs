@@ -1,6 +1,8 @@
 ﻿using Business.Concrete;
+using Core.Utilities.Results;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
+using Entities.Concrete;
 using System;
 
 namespace ConsoleUI
@@ -9,40 +11,19 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            //InMemoryProduct();
-            //ProductTest();
-            //CategoryTest();
+            //ProductGelAll();
             ProductManager productManager = new ProductManager(new EfProductDal());
-            foreach (var product in productManager.GetProductDetais())
-            {
-                Console.WriteLine(product.ProductName+"/"+product.CategoryName);
-            }
+            IResult result = productManager.Add(new Product { ProductName = "A", CategoryId = 3, UnitPrice = 12, UnitsInStock = 22 });
+            Console.WriteLine(result.Message);
         }
 
-        private static void CategoryTest()
-        {
-            CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
-            foreach (var category in categoryManager.GetAll())
-            {
-                Console.WriteLine(category.CategoryName);
-            }
-        }
-
-        private static void ProductTest()
+        private static void ProductGelAll()
         {
             ProductManager productManager = new ProductManager(new EfProductDal());
-            foreach (var product in productManager.GetAllByCategoryId(5))
+            Console.WriteLine(productManager.GetAll().Message);
+            foreach (var product in productManager.GetAll().Data)
             {
-                Console.WriteLine(product.ProductName);
-            }
-        }
-
-        private static void InMemoryProduct()
-        {
-            ProductManager productManager = new ProductManager(new InMemoryProductDal());
-            foreach (var product in productManager.GetAll())
-            {
-                Console.WriteLine(product.ProductName);
+                Console.WriteLine(product.ProductName + " / " + product.UnitPrice + " / " + product.UnitsInStock);
             }
         }
     }
