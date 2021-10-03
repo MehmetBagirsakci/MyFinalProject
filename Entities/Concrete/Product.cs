@@ -20,3 +20,4 @@ namespace Entities.Concrete
 //3- IOC container
 //4- IDisposable pattern
 //5- DTO (Data Transformation Object)
+//6- Swagger araştır. API Dokümantasyonları ile ilgili
