@@ -34,8 +34,8 @@ namespace WebAPI
             //ama bir sepet uygulamasýnda Sepeti manager'da tutuyorsanýz singleton olursa bir client
             //sepetine bir ürün eklediðinde herkesin sepetine eklenir.
             //sepetdeki ürünleri veri tabanýnda tutmak mantýklý.
-            services.AddSingleton<IProductService, ProductManager>();//Birisi constructorda IProductService isterse, ona ProductManager'i new leyip veriyor.
-            services.AddSingleton<IProductDal, EfProductDal>();
+            //services.AddSingleton<IProductService, ProductManager>();//Birisi constructorda IProductService isterse, ona ProductManager'i new leyip veriyor.
+            //services.AddSingleton<IProductDal, EfProductDal>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

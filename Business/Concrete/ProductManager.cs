@@ -7,6 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Business.Constants;
+using FluentValidation;
+using Business.ValidationRules.FluentValidation;
+using Core.CrossCuttingConcerns.Validation;
+using Core.Aspects.Autofac.Validation;
 
 namespace Business.Concrete
 {
@@ -46,12 +50,10 @@ namespace Business.Concrete
             //return _productDal.GetProductDetails();
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails(), Messages.ProductDetailed);
         }
+        
+        [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
-            if(product.ProductName.Length<2)
-            {
-                return new ErrorResult(Messages.ProductNameInvalid);
-            }
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
         }
