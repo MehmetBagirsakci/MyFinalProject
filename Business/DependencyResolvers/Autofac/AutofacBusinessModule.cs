@@ -20,6 +20,9 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<ProductManager>().As<IProductService>().SingleInstance(); //içinde data tutmuyor. Tek instance oluştur. Herkes onu kullansın
             builder.RegisterType<EfProductDal>().As<IProductDal>().SingleInstance();
 
+            builder.RegisterType<CategoryManager>().As<ICategoryService>().SingleInstance();
+            builder.RegisterType<EfCategoryDal>().As<ICategoryDal>().SingleInstance();
+
             //ASPECTLELRİ BAĞLIYORUZ
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
