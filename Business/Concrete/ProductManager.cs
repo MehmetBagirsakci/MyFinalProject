@@ -1,18 +1,15 @@
-﻿using Core.Utilities.Results;
-using Business.Abstract;
+﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
+using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.Utilities.Business;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Business.Constants;
-using FluentValidation;
-using Business.ValidationRules.FluentValidation;
-using Core.CrossCuttingConcerns.Validation;
-using Core.Aspects.Autofac.Validation;
 using System.Linq;
-using Core.Utilities.Business;
 
 namespace Business.Concrete
 {
@@ -57,6 +54,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails(), Messages.ProductDetailed);
         }
         
+        [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {

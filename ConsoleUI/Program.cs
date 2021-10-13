@@ -12,19 +12,19 @@ namespace ConsoleUI
         static void Main(string[] args)
         {
             //ProductGelAll();
-            ProductManager productManager = new ProductManager(new EfProductDal());
-            IResult result = productManager.Add(new Product { ProductName = "A", CategoryId = 3, UnitPrice = 12, UnitsInStock = 22 });
-            Console.WriteLine(result.Message);
+            //ProductManager productManager = new ProductManager(new EfProductDal());
+            //IResult result = productManager.Add(new Product { ProductName = "A", CategoryId = 3, UnitPrice = 12, UnitsInStock = 22 });
+            //Console.WriteLine(result.Message);
         }
 
         private static void ProductGelAll()
         {
-            ProductManager productManager = new ProductManager(new EfProductDal());
-            Console.WriteLine(productManager.GetAll().Message);
-            foreach (var product in productManager.GetAll().Data)
-            {
-                Console.WriteLine(product.ProductName + " / " + product.UnitPrice + " / " + product.UnitsInStock);
-            }
+            //ProductManager productManager = new ProductManager(new EfProductDal());
+            //Console.WriteLine(productManager.GetAll().Message);
+            //foreach (var product in productManager.GetAll().Data)
+            //{
+            //    Console.WriteLine(product.ProductName + " / " + product.UnitPrice + " / " + product.UnitsInStock);
+            //}
         }
     }
 }
