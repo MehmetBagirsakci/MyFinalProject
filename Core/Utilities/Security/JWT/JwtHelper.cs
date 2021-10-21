@@ -24,8 +24,11 @@ namespace Core.Utilities.Security.JWT
         }
         public AccessToken CreateToken(User user, List<OperationClaim> operationClaims)
         {
+            //Token ne zamana kadar geçerli olacak. Appsettings.json dan okuduk.
             _accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOptions.AccessTokenExpiration);
+            //Anahtar. Appsettings.json dan okuyup Symmetric byte array formatına döndürdük. JWT servisleri byte array istiyor.
             var securityKey = SecurityKeyHelper.CreateSecurityKey(_tokenOptions.SecurityKey);
+            //Hangi anahtar ve hang algoritmayı kullanıp imzalama yapacağız.
             var signingCredentials = SigningCredentialsHelper.CreateSigningCredentials(securityKey);
             var jwt = CreateJwtSecurityToken(_tokenOptions, user, signingCredentials, operationClaims);
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();

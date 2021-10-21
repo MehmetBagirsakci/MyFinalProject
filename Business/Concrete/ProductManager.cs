@@ -2,14 +2,19 @@
 using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Performance;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+
 
 namespace Business.Concrete
 {
@@ -27,6 +32,7 @@ namespace Business.Concrete
             _productDal = productDal;
             _categoryService = categoryService;
         }
+        [CacheAspect]//key,value
         public IDataResult<List<Product>> GetAll()
         {
             //iş kodları (Ürün adı en az 2 karakter mi?.....)
@@ -53,12 +59,13 @@ namespace Business.Concrete
             //return _productDal.GetProductDetails();
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails(), Messages.ProductDetailed);
         }
-        
+
         [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")] //Bellekte IProductService'teki bütün Get ile başlayan metotları sil
         public IResult Add(Product product)
         {
-            IResult result=BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId),
+            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId),
                               CheckIfProductNameExists(product.ProductName),
                               CheckIfCategoryLimitExceded());
             if (result != null)
@@ -69,11 +76,15 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ProductAdded);
         }
 
+        [CacheAspect]
+        [PerformanceAspect(5)]//Bu metodun çalışması 5 saniyeyi geçerse beni uyar.
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId));
         }
 
+        [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")] //Bellekte IProductService'teki bütün Get ile başlayan metotları sil
         public IResult Update(Product product)
         {
             var result = _productDal.GetAll(p => p.CategoryId == product.ProductId).Count;
@@ -84,7 +95,7 @@ namespace Business.Concrete
             _productDal.Update(product);
             return new SuccessResult(Messages.ProductUpdated);
         }
-        
+
         private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
         {
             var result = _productDal.GetAll(p => p.CategoryId == categoryId).Count;
@@ -104,15 +115,27 @@ namespace Business.Concrete
             }
             return new SuccessResult();
         }
+
         private IResult CheckIfCategoryLimitExceded()
         {
             var result = _categoryService.GetAll().Count;
-            if(result>15)
+            if (result > 15)
             {
                 return new ErrorResult(Messages.CategoryLimitExceded);
             }
             return new SuccessResult();
         }
 
+        [TransactionScopeAspect]
+        public IResult AddTransactionalTest(Product product)
+        {
+            Add(product);
+            if (product.UnitPrice < 10)
+            {
+                throw new Exception("");
+            }
+            Add(product);
+            return null;
+        }
     }
 }
