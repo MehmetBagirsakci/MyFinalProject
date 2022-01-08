@@ -3,9 +3,11 @@ using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Logging;
 using Core.Aspects.Autofac.Performance;
 using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Logging.Log4Net.Loggers;
 using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -32,7 +34,9 @@ namespace Business.Concrete
             _productDal = productDal;
             _categoryService = categoryService;
         }
+     
         [CacheAspect]//key,value
+        [LogAspect(typeof(DatabaseLogger))]
         public IDataResult<List<Product>> GetAll()
         {
             //iş kodları (Ürün adı en az 2 karakter mi?.....)
@@ -42,6 +46,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductsListed);
         }
 
+        [LogAspect(typeof(FileLogger))]
         public IDataResult<List<Product>> GetAllByCategoryId(int id)
         {
             //return _productDal.GetAll(p => p.CategoryId == id);
@@ -63,6 +68,7 @@ namespace Business.Concrete
         [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")] //Bellekte IProductService'teki bütün Get ile başlayan metotları sil
+        [LogAspect(typeof(FileLogger))]
         public IResult Add(Product product)
         {
             IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId),
@@ -78,6 +84,7 @@ namespace Business.Concrete
 
         [CacheAspect]
         [PerformanceAspect(5)]//Bu metodun çalışması 5 saniyeyi geçerse beni uyar.
+        [LogAspect(typeof(DatabaseLogger))]
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId));
@@ -85,6 +92,7 @@ namespace Business.Concrete
 
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")] //Bellekte IProductService'teki bütün Get ile başlayan metotları sil
+        [LogAspect(typeof(DatabaseLogger))]
         public IResult Update(Product product)
         {
             var result = _productDal.GetAll(p => p.CategoryId == product.ProductId).Count;
