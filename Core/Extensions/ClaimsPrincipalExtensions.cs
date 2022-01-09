@@ -18,6 +18,11 @@ namespace Core.Extensions
         {
             return claimsPrincipal?.Claims(ClaimTypes.Role);
         }
+
+        public static string UserId(this ClaimsPrincipal claimsPrincipal)
+        {
+            return claimsPrincipal?.Claims(ClaimTypes.NameIdentifier).FirstOrDefault();
+        }
     }
 }
 //ClaimsPrincipal: using System.Security.Claims;

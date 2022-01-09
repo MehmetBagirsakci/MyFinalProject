@@ -20,8 +20,6 @@ using System.Linq;
 
 namespace Business.Concrete
 {
-    //Bir EntityManager (örneğin ProductManager); kendi dal'ı hariç başka bir dal'ı enjecte edemez.
-    //Bunun yerine servis enjekte edilir.
     public class ProductManager : IProductService
     {
         //Constructor injection
@@ -34,9 +32,9 @@ namespace Business.Concrete
             _productDal = productDal;
             _categoryService = categoryService;
         }
-     
-        [CacheAspect]//key,value
+
         [LogAspect(typeof(DatabaseLogger))]
+        [CacheAspect]//key,value
         public IDataResult<List<Product>> GetAll()
         {
             //iş kodları (Ürün adı en az 2 karakter mi?.....)
@@ -46,7 +44,9 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductsListed);
         }
 
+        [SecuredOperation("product.list,admin")]
         [LogAspect(typeof(FileLogger))]
+        [UserLogAspect(typeof(DatabaseLogger))]
         public IDataResult<List<Product>> GetAllByCategoryId(int id)
         {
             //return _productDal.GetAll(p => p.CategoryId == id);
@@ -67,8 +67,9 @@ namespace Business.Concrete
 
         [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")] //Bellekte IProductService'teki bütün Get ile başlayan metotları sil
         [LogAspect(typeof(FileLogger))]
+        [UserLogAspect(typeof(DatabaseLogger))]
+        [CacheRemoveAspect("IProductService.Get")] //Bellekte IProductService'teki bütün Get ile başlayan metotları sil
         public IResult Add(Product product)
         {
             IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId),
@@ -147,3 +148,6 @@ namespace Business.Concrete
         }
     }
 }
+
+//Bir EntityManager (örneğin ProductManager); kendi dal'ı hariç başka bir dal'ı enjecte edemez.
+//Bunun yerine servis enjekte edilir.

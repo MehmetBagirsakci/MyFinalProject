@@ -77,6 +77,17 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
+
+        [HttpGet("getallbycategoryid")]
+        public IActionResult GetAllByCategoryId(int id)
+        {
+            var result = _productService.GetAllByCategoryId(id);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
         //Projelerde güncelleme ve silme için post kullanılır.
         //İstersen güncelleme için htttp put
         //Silme için http delete kullanabilirsin
