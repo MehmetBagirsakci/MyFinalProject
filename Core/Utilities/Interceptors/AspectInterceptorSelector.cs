@@ -21,7 +21,7 @@ namespace Core.Utilities.Interceptors
             classAttributes.AddRange(methodAttributes);
             
             classAttributes.Add(new ExceptionLogAspect(typeof(FileLogger))); 
-            //Yukarıdaki ExceptionLogAspect işleminde diyoruzki, hangi metot bir exception olursa logunu al. 
+            //Yukarıdaki ExceptionLogAspect işleminde diyoruzki, hangi metotda bir exception olursa logunu al. 
             //Yani ExceptionLogAspect bütün metotlara sen yazmasanda otomatik ekleniyor.
             //--Buraya PerformanceAspect eklese idik, her çalışacak metoda eklenir.
 
