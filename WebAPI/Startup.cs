@@ -64,6 +64,9 @@ namespace WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.ConfigureCustomExceptionMiddleware(); //biz ekledik. Exceptionlarý merkezi hale getirdik.
+
+            app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyHeader()); //biz ekledik.
 
             app.UseHttpsRedirection();
 

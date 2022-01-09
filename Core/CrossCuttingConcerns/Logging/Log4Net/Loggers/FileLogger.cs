@@ -11,3 +11,4 @@ namespace Core.CrossCuttingConcerns.Logging.Log4Net.Loggers
         }
     }
 }
+//Genel olarak Exception logları dosyaya yazılır. Diğer loglar veritabanına yazılır.
