@@ -44,7 +44,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductsListed);
         }
 
-        [SecuredOperation("product.list,admin")]
+        //[SecuredOperation("product.list,admin")]
         [LogAspect(typeof(FileLogger))]
         [UserLogAspect(typeof(DatabaseLogger))]
         public IDataResult<List<Product>> GetAllByCategoryId(int id)
@@ -59,7 +59,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max));
         }
 
-        public IDataResult<List<ProductDetailDto>> GetProductDetais()
+        public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
             //return _productDal.GetProductDetails();
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails(), Messages.ProductDetailed);
@@ -127,7 +127,7 @@ namespace Business.Concrete
 
         private IResult CheckIfCategoryLimitExceded()
         {
-            var result = _categoryService.GetAll().Count;
+            var result = _categoryService.GetAll().Data.Count;
             if (result > 15)
             {
                 return new ErrorResult(Messages.CategoryLimitExceded);

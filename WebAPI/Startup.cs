@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 //nuget: Microsoft.AspNetCore.Authentication
+//nuget: nswag -> NSwag.AspNetCore
 
 namespace WebAPI
 {
@@ -35,6 +36,7 @@ namespace WebAPI
             //services.AddSingleton<IProductService, ProductManager>();//Birisi constructorda IProductService isterse, ona ProductManager'i new leyip veriyor.
             //services.AddSingleton<IProductDal, EfProductDal>();
 
+            services.AddCors();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
@@ -55,6 +57,25 @@ namespace WebAPI
             services.AddDependencyResolvers(new ICoreModule[] { 
             new CoreModule()
             });//Biz extension yazdýk.
+
+            //Swagger aktifleþtiriyoruz.
+            services.AddSwaggerDocument(config=>
+            {
+                config.PostProcess = (doc =>
+                {
+                    doc.Info.Title = "My Final Project";
+                    doc.Info.Version = "1.0.13";
+                    doc.Info.Description = "Katmanlý Mimari ve API ile ilk uygulamam";
+                    doc.Info.Contact = new NSwag.OpenApiContact
+                    {
+                        Email = "mehmetbagirsakci@gmail.com",
+                        Name = "Mehmet Baðýrsakçý"
+                    };
+                    
+             
+                });
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,11 +87,14 @@ namespace WebAPI
             }
             app.ConfigureCustomExceptionMiddleware(); //biz ekledik. Exceptionlarý merkezi hale getirdik.
 
-            app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyHeader()); //biz ekledik.
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyHeader()); //Angular 4200 portu ile ayaða kalkýyor. 4200 portundan gelen istekleri kabul et demiþ olduk.
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
+            app.UseRouting(); 
+
+            app.UseOpenApi();//swagger için ekledik.
+            app.UseSwaggerUi3();//swagger için ekledik.
 
             app.UseAuthentication();//biz ekledik.
 

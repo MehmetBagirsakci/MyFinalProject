@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
@@ -45,9 +46,11 @@ namespace WebAPI.Controllers
         //    return result.Data;
         //}
 
+
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
+            //Thread.Sleep(2000);//2 saniye gecikme yaptık. Frontend de spinin çalıştığını görmek için
             var result = _productService.GetAll();
             if (result.Success)
             {
@@ -78,10 +81,21 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getallbycategoryid")]
-        public IActionResult GetAllByCategoryId(int id)
+        [HttpGet("getallbycategory")]
+        public IActionResult GetAllByCategoryId(int categoryId)
         {
-            var result = _productService.GetAllByCategoryId(id);
+            var result = _productService.GetAllByCategoryId(categoryId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("getproductdetails")]
+        public IActionResult GetProductDetails()
+        {
+            var result = _productService.GetProductDetails();
             if (result.Success)
             {
                 return Ok(result);
