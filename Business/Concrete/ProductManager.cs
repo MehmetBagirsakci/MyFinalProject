@@ -151,3 +151,4 @@ namespace Business.Concrete
 
 //Bir EntityManager (örneğin ProductManager); kendi dal'ı hariç başka bir dal'ı enjecte edemez.
 //Bunun yerine servis enjekte edilir.
+//Deneme Olarak Eklendi
